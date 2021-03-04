@@ -48,6 +48,7 @@ ReadInputs <- function(path) {
                  ReadExcel(path, sheet = "Interventions", skip = 2),
                  ReadExcel(path, sheet = "Data", skip = 3),
                  ReadExcel(path, sheet = "PUI Details", skip = 4),
+                 ReadExcel(path, sheet = "Vaccine"),
                  ReadExcel(path, col_types = c("text", "list", "skip", "skip"), sheet = "Internal"))
   names(sheets) <- sapply(sheets, function (z) attr(z, "sheetname"))
   sheets <- rapply(sheets, as.Date, classes = "POSIXt", how = "replace") #convert dates
@@ -85,6 +86,8 @@ ProcessSheets <- function(sheets, path) {
   interventions <- sheets$Interventions
   obs.data <- sheets$Data
 
+  vaccines <- sheets$Vaccine
+
   all.na <- rowAlls(is.na(as.matrix(obs.data[, -"date"])))
   obs.data <- obs.data[all.na == F]
 
@@ -117,7 +120,7 @@ ProcessSheets <- function(sheets, path) {
   }
 
   all.inputs.str <- ToString(sheets)
-  return(list(params = params, frac_pui = frac_pui, model.inputs = model.inputs, internal.args = internal.args, interventions = interventions, obs.data = obs.data, all.inputs.str = all.inputs.str))
+  return(list(params = params, frac_pui = frac_pui, model.inputs = model.inputs, internal.args = internal.args, interventions = interventions, obs.data = obs.data, vaccines = vaccines, all.inputs.str = all.inputs.str))
 }
 
 
